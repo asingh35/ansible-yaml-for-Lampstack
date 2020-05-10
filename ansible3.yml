@@ -1,0 +1,41 @@
+--- 
+- 
+  hosts: ansible02
+  tasks: 
+    - 
+      apt: 
+        pkg: 
+          - apache2
+          - mysql-server
+          - php
+          - php-mysql
+        state: present
+        update_cache: true
+      become: true
+      name: "install lamp stack"
+    - 
+      become: true
+      become_user: adminx
+      name: "start apache service"
+      service: 
+        enabled: true
+        name: apache2
+        state: started
+    - 
+      become: true
+      become_user: adminx
+      name: "start mysql service"
+      service: 
+        enabled: true
+        name: mysql
+        state: started
+    - 
+      file: "path=/var/www/html state=directory mode=0755"
+      name: "create target directory"
+    - 
+      become: true
+      become_user: 
+      copy: 
+        dest: /var/www/html/index.html
+        src: /tmp/index.html
+      name: "deploy index.html"
